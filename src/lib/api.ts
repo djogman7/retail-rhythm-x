@@ -97,6 +97,18 @@ class ApiService {
     }
   }
 
+  // Helper to format dates to dd-MM-yyyy HH:mm:ss format
+  private formatDateForAPI(date: Date): string {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  }
+
   // Authentication
   async login(nom: string, motPasse: string): Promise<ApiResponse<UserInfo>> {
     return this.makeRequest('/Login', 'POST', { nom, motPasse });
@@ -133,7 +145,7 @@ class ApiService {
 
   // Store APIs
   async getMagasins(): Promise<ApiResponse<DspMagasin[]>> {
-    return this.makeRequest('/getMagasins');
+    return this.makeRequest('/getMagasins', 'POST');
   }
 
   async getMagasinsInfoByDate(
@@ -170,6 +182,30 @@ class ApiService {
       numMagasin,
       debut,
       fin,
+    });
+  }
+
+  async getDimsPrdVendus(
+    numMagasin: number,
+    numProduit: number,
+    debut: string,
+    fin: string
+  ): Promise<ApiResponse<VuePrdsVendusParDate[]>> {
+    return this.makeRequest('/getDimsPrdVendus', 'POST', {
+      numMagasin,
+      numProduit,
+      debut,
+      fin,
+    });
+  }
+
+  async getLineVentes(
+    numMvt: number,
+    numMagasin: number
+  ): Promise<any[]> {
+    return this.makeRequest('/getLineVentes', 'POST', {
+      numMvt,
+      numMagasin,
     });
   }
 
@@ -213,6 +249,15 @@ class ApiService {
     return this.makeRequest('/StockByProduct', 'POST', body);
   }
 
+  async getDims(barCode: string): Promise<any> {
+    return this.makeRequest('/getDims', 'POST', { barCode });
+  }
+
+  // Parameters API
+  async getParam(): Promise<{ dataObject: any }> {
+    return this.makeRequest('/getParam', 'POST');
+  }
+
   // Comparison APIs
   async getComparePeriode(
     dateDebut_1: string,
@@ -228,6 +273,18 @@ class ApiService {
       dateFin_2,
       codeMagasin,
     });
+  }
+
+  // Utility methods for date formatting
+  formatDateTimeForAPI(date: Date): string {
+    return this.formatDateForAPI(date);
+  }
+
+  formatDateRangeForAPI(startDate: Date, endDate: Date): { debut: string; fin: string } {
+    return {
+      debut: this.formatDateForAPI(startDate),
+      fin: this.formatDateForAPI(endDate),
+    };
   }
 }
 
