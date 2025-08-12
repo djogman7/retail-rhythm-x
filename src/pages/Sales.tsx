@@ -14,8 +14,8 @@ import { apiService, BestSalePrdModel } from "@/lib/api";
 export default function Sales() {
   const [selectedStore, setSelectedStore] = useState<string>("");
   const [dateRange, setDateRange] = useState({
-    debut: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' '),
-    fin: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    debut: apiService.formatDateTimeForAPI(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
+    fin: apiService.formatDateTimeForAPI(new Date())
   });
 
   // Get stores
@@ -102,10 +102,10 @@ export default function Sales() {
               <Label>Start Date</Label>
               <Input
                 type="datetime-local"
-                value={dateRange.debut.replace(' ', 'T')}
+                value={dateRange.debut.split(' ')[0] + 'T' + dateRange.debut.split(' ')[1]}
                 onChange={(e) => setDateRange(prev => ({ 
                   ...prev, 
-                  debut: e.target.value.replace('T', ' ')
+                  debut: apiService.formatDateTimeForAPI(new Date(e.target.value))
                 }))}
               />
             </div>
@@ -114,10 +114,10 @@ export default function Sales() {
               <Label>End Date</Label>
               <Input
                 type="datetime-local"
-                value={dateRange.fin.replace(' ', 'T')}
+                value={dateRange.fin.split(' ')[0] + 'T' + dateRange.fin.split(' ')[1]}
                 onChange={(e) => setDateRange(prev => ({ 
                   ...prev, 
-                  fin: e.target.value.replace('T', ' ')
+                  fin: apiService.formatDateTimeForAPI(new Date(e.target.value))
                 }))}
               />
             </div>

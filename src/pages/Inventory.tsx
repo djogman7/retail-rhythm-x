@@ -38,6 +38,7 @@ export default function Inventory() {
       return await apiService.getStockByProduct(searchMode === "barcode", specificProduct);
     },
     enabled: !!specificProduct,
+    staleTime: 1 * 60 * 1000, // 1 minute
   });
 
   const stockData = (stockResponse as any)?.data || [];

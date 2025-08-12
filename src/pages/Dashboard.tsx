@@ -40,11 +40,10 @@ export default function Dashboard() {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - 30);
       
-      return apiService.getEvolutionCA(
-        startDate.toISOString().split('T')[0],
-        endDate.toISOString().split('T')[0],
-        selectedStore
-      );
+      const dateDebut = startDate.toISOString().split('T')[0];
+      const dateFin = endDate.toISOString().split('T')[0];
+      
+      return apiService.getEvolutionCA(dateDebut, dateFin, selectedStore);
     },
     staleTime: 5 * 60 * 1000,
   });
